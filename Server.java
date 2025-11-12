@@ -75,7 +75,14 @@ public class Server {
                         break;
                     }
                     
-                    System.out.println(username + ": " + message);
+                    // Log message (show simplified version for images)
+                    if (message.startsWith("IMAGE:")) {
+                        System.out.println(username + ": [sent an image 📷]");
+                    } else if (message.startsWith("TEXT:")) {
+                        System.out.println(username + ": " + message.substring(5));
+                    } else {
+                        System.out.println(username + ": " + message);
+                    }
                     
                     // Broadcast message to everyone
                     broadcastMessage(username, message);

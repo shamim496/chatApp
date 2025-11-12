@@ -1,9 +1,13 @@
 import javax.swing.*;
 import javax.swing.border.*;
+import javax.swing.text.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
 import java.net.*;
+import java.util.Base64;
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 
 /**
  * Chat Client Application with Swing GUI
@@ -20,10 +24,19 @@ public class Client extends JFrame {
     private BufferedReader in;
     
     // UI Components
-    private JTextArea chatArea;
+    private JTextPane chatPane;
+    private StyledDocument chatDoc;
     private JTextField messageField;
     private JButton sendButton;
+    private JButton imageButton;
     private String username;
+    
+    // Message styles
+    private Style systemStyle;
+    private Style ownMessageStyle;
+    private Style otherMessageStyle;
+    private Style serverStyle;
+    private Style timestampStyle;
     
     /**
      * Constructor - Setup UI
@@ -83,16 +96,17 @@ public class Client extends JFrame {
         headerPanel.add(headerLabel);
         
         // ============ Chat Area ============
-        chatArea = new JTextArea();
-        chatArea.setEditable(false);
-        chatArea.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-        chatArea.setBackground(Color.WHITE);
-        chatArea.setLineWrap(true);
-        chatArea.setWrapStyleWord(true);
-        chatArea.setMargin(new Insets(10, 10, 10, 10));
+        chatPane = new JTextPane();
+        chatPane.setEditable(false);
+        chatPane.setBackground(new Color(245, 245, 250));
+        chatPane.setMargin(new Insets(10, 10, 10, 10));
+        
+        // Setup styled document
+        chatDoc = chatPane.getStyledDocument();
+        initializeStyles();
         
         // Add scrollbar
-        JScrollPane scrollPane = new JScrollPane(chatArea);
+        JScrollPane scrollPane = new JScrollPane(chatPane);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         scrollPane.setBorder(BorderFactory.createLineBorder(new Color(200, 200, 200), 1));
         
@@ -109,17 +123,44 @@ public class Client extends JFrame {
             new EmptyBorder(5, 10, 5, 10)
         ));
         
+        // Image/Photo button
+        imageButton = new JButton("📁 Upload");
+        imageButton.setFont(new Font("Segoe UI", Font.BOLD, 13));
+        imageButton.setBackground(new Color(76, 175, 80));
+        imageButton.setForeground(Color.WHITE);
+        imageButton.setFocusPainted(false);
+        imageButton.setBorderPainted(false);
+        imageButton.setPreferredSize(new Dimension(95, 40));
+        imageButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        imageButton.setToolTipText("Upload and send image");
+        
+        // Image button hover effect
+        imageButton.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                imageButton.setBackground(new Color(66, 150, 70));
+            }
+            
+            @Override
+            public void mouseExited(MouseEvent e) {
+                imageButton.setBackground(new Color(76, 175, 80));
+            }
+        });
+        
+        // Image button click event
+        imageButton.addActionListener(e -> selectAndSendImage());
+        
         // Send button
         sendButton = new JButton("📤 Send");
-        sendButton.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        sendButton.setFont(new Font("Segoe UI", Font.BOLD, 13));
         sendButton.setBackground(new Color(70, 130, 180));
         sendButton.setForeground(Color.WHITE);
         sendButton.setFocusPainted(false);
         sendButton.setBorderPainted(false);
-        sendButton.setPreferredSize(new Dimension(100, 40));
+        sendButton.setPreferredSize(new Dimension(95, 40));
         sendButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
         
-        // Add hover effect
+        // Send button hover effect
         sendButton.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent e) {
@@ -138,9 +179,15 @@ public class Client extends JFrame {
         // Send message on Enter key press
         messageField.addActionListener(e -> sendMessage());
         
+        // Button panel for image and send buttons
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 5, 0));
+        buttonPanel.setBackground(new Color(240, 240, 245));
+        buttonPanel.add(imageButton);
+        buttonPanel.add(sendButton);
+        
         // Add components to bottom panel
         bottomPanel.add(messageField, BorderLayout.CENTER);
-        bottomPanel.add(sendButton, BorderLayout.EAST);
+        bottomPanel.add(buttonPanel, BorderLayout.EAST);
         
         // Add all components to main panel
         mainPanel.add(headerPanel, BorderLayout.NORTH);
@@ -149,6 +196,40 @@ public class Client extends JFrame {
         
         // Add main panel to frame
         add(mainPanel);
+    }
+    
+    /**
+     * Initialize message styles with different colors
+     */
+    private void initializeStyles() {
+        // System messages (connections, errors)
+        systemStyle = chatPane.addStyle("System", null);
+        StyleConstants.setForeground(systemStyle, new Color(46, 125, 50));
+        StyleConstants.setFontSize(systemStyle, 13);
+        StyleConstants.setItalic(systemStyle, true);
+        
+        // Own messages
+        ownMessageStyle = chatPane.addStyle("Own", null);
+        StyleConstants.setForeground(ownMessageStyle, new Color(13, 71, 161));
+        StyleConstants.setFontSize(ownMessageStyle, 14);
+        StyleConstants.setBold(ownMessageStyle, true);
+        
+        // Other users' messages
+        otherMessageStyle = chatPane.addStyle("Other", null);
+        StyleConstants.setForeground(otherMessageStyle, new Color(74, 20, 140));
+        StyleConstants.setFontSize(otherMessageStyle, 14);
+        StyleConstants.setBold(otherMessageStyle, true);
+        
+        // Server messages
+        serverStyle = chatPane.addStyle("Server", null);
+        StyleConstants.setForeground(serverStyle, new Color(211, 47, 47));
+        StyleConstants.setFontSize(serverStyle, 13);
+        StyleConstants.setBold(serverStyle, true);
+        
+        // Timestamp
+        timestampStyle = chatPane.addStyle("Timestamp", null);
+        StyleConstants.setForeground(timestampStyle, new Color(117, 117, 117));
+        StyleConstants.setFontSize(timestampStyle, 11);
     }
     
     /**
@@ -171,7 +252,7 @@ public class Client extends JFrame {
             messageReceiver.start();
             
             // Connection successful message
-            appendToChat("✅ Connected to server!\n");
+            appendSystemMessage("✅ Connected to server!");
             
         } catch (IOException e) {
             JOptionPane.showMessageDialog(
@@ -193,7 +274,7 @@ public class Client extends JFrame {
         // Check for empty message
         if (!message.isEmpty() && out != null) {
             // Send message to server
-            out.println(message);
+            out.println("TEXT:" + message);
             
             // Clear input field
             messageField.setText("");
@@ -204,13 +285,181 @@ public class Client extends JFrame {
     }
     
     /**
-     * Append message to chat area
+     * Select and send image
      */
-    private void appendToChat(String message) {
-        chatArea.append(message + "\n");
+    private void selectAndSendImage() {
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setDialogTitle("Select Image");
+        fileChooser.setFileFilter(new javax.swing.filechooser.FileNameExtensionFilter(
+            "Image Files", "jpg", "jpeg", "png", "gif", "bmp"));
         
-        // Automatically scroll to bottom
-        chatArea.setCaretPosition(chatArea.getDocument().getLength());
+        int result = fileChooser.showOpenDialog(this);
+        
+        if (result == JFileChooser.APPROVE_OPTION) {
+            File selectedFile = fileChooser.getSelectedFile();
+            
+            try {
+                // Read image
+                BufferedImage image = ImageIO.read(selectedFile);
+                
+                if (image == null) {
+                    JOptionPane.showMessageDialog(this, 
+                        "Invalid image file!", 
+                        "Error", 
+                        JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                
+                // Resize if too large (max 400px width)
+                int maxWidth = 400;
+                if (image.getWidth() > maxWidth) {
+                    int newHeight = (int)((double)maxWidth / image.getWidth() * image.getHeight());
+                    Image scaledImage = image.getScaledInstance(maxWidth, newHeight, Image.SCALE_SMOOTH);
+                    BufferedImage resizedImage = new BufferedImage(maxWidth, newHeight, BufferedImage.TYPE_INT_RGB);
+                    Graphics2D g = resizedImage.createGraphics();
+                    g.drawImage(scaledImage, 0, 0, null);
+                    g.dispose();
+                    image = resizedImage;
+                }
+                
+                // Convert to Base64
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                ImageIO.write(image, "jpg", baos);
+                byte[] imageBytes = baos.toByteArray();
+                String base64Image = Base64.getEncoder().encodeToString(imageBytes);
+                
+                // Send image data
+                if (out != null) {
+                    out.println("IMAGE:" + base64Image);
+                    appendSystemMessage("📷 Image sent!");
+                }
+                
+            } catch (IOException e) {
+                JOptionPane.showMessageDialog(this, 
+                    "Error loading image: " + e.getMessage(), 
+                    "Error", 
+                    JOptionPane.ERROR_MESSAGE);
+                e.printStackTrace();
+            }
+        }
+    }
+    
+    /**
+     * Append system message (connections, errors)
+     */
+    private void appendSystemMessage(String message) {
+        try {
+            chatDoc.insertString(chatDoc.getLength(), "\n" + message + "\n", systemStyle);
+            chatPane.setCaretPosition(chatDoc.getLength());
+        } catch (BadLocationException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    /**
+     * Append formatted chat message with username and timestamp
+     */
+    private void appendChatMessage(String fullMessage) {
+        try {
+            // Parse message format: [USERNAME TIMESTAMP]: MESSAGE
+            if (fullMessage.startsWith("[SERVER")) {
+                // Server announcement
+                chatDoc.insertString(chatDoc.getLength(), "\n📢 ", null);
+                
+                int endBracket = fullMessage.indexOf("]");
+                String content = fullMessage.substring(endBracket + 2).trim();
+                chatDoc.insertString(chatDoc.getLength(), content, serverStyle);
+                chatDoc.insertString(chatDoc.getLength(), "\n", null);
+                
+            } else if (fullMessage.startsWith("[")) {
+                // Regular user message
+                int endBracket = fullMessage.indexOf("]");
+                String headerPart = fullMessage.substring(1, endBracket);
+                String messagePart = fullMessage.substring(endBracket + 2).trim();
+                
+                // Split username and timestamp
+                int lastSpace = headerPart.lastIndexOf(" ");
+                String sender = headerPart.substring(0, lastSpace);
+                String timestamp = headerPart.substring(lastSpace + 1);
+                
+                // Add newline for spacing
+                chatDoc.insertString(chatDoc.getLength(), "\n", null);
+                
+                // Choose style based on sender
+                Style nameStyle = sender.equals(username) ? ownMessageStyle : otherMessageStyle;
+                
+                // Add sender name with emoji
+                String emoji = sender.equals(username) ? "💙 " : "💜 ";
+                chatDoc.insertString(chatDoc.getLength(), emoji + sender, nameStyle);
+                
+                // Add timestamp
+                chatDoc.insertString(chatDoc.getLength(), " • " + timestamp, timestampStyle);
+                
+                // Check if message is an image or text
+                if (messagePart.startsWith("IMAGE:")) {
+                    // Display image
+                    String base64Image = messagePart.substring(6);
+                    displayImage(base64Image);
+                } else if (messagePart.startsWith("TEXT:")) {
+                    // Display text message
+                    String textContent = messagePart.substring(5);
+                    Style messageTextStyle = chatPane.addStyle("MessageText", null);
+                    StyleConstants.setForeground(messageTextStyle, new Color(33, 33, 33));
+                    StyleConstants.setFontSize(messageTextStyle, 14);
+                    chatDoc.insertString(chatDoc.getLength(), "\n  " + textContent + "\n", messageTextStyle);
+                } else {
+                    // Legacy format without prefix
+                    Style messageTextStyle = chatPane.addStyle("MessageText", null);
+                    StyleConstants.setForeground(messageTextStyle, new Color(33, 33, 33));
+                    StyleConstants.setFontSize(messageTextStyle, 14);
+                    chatDoc.insertString(chatDoc.getLength(), "\n  " + messagePart + "\n", messageTextStyle);
+                }
+                
+            } else {
+                // Fallback for any other format
+                chatDoc.insertString(chatDoc.getLength(), fullMessage + "\n", null);
+            }
+            
+            // Auto-scroll to bottom
+            chatPane.setCaretPosition(chatDoc.getLength());
+            
+        } catch (BadLocationException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    /**
+     * Display image in chat
+     */
+    private void displayImage(String base64Image) {
+        try {
+            // Decode Base64
+            byte[] imageBytes = Base64.getDecoder().decode(base64Image);
+            BufferedImage image = ImageIO.read(new ByteArrayInputStream(imageBytes));
+            
+            if (image != null) {
+                // Insert newline and image
+                chatDoc.insertString(chatDoc.getLength(), "\n  ", null);
+                
+                // Insert image as icon
+                ImageIcon imageIcon = new ImageIcon(image);
+                Style imageStyle = chatPane.addStyle("ImageStyle", null);
+                StyleConstants.setIcon(imageStyle, imageIcon);
+                chatDoc.insertString(chatDoc.getLength(), " ", imageStyle);
+                
+                chatDoc.insertString(chatDoc.getLength(), "\n", null);
+            }
+            
+        } catch (Exception e) {
+            try {
+                Style errorStyle = chatPane.addStyle("Error", null);
+                StyleConstants.setForeground(errorStyle, Color.RED);
+                chatDoc.insertString(chatDoc.getLength(), "\n  [Error displaying image]\n", errorStyle);
+            } catch (BadLocationException ex) {
+                ex.printStackTrace();
+            }
+            e.printStackTrace();
+        }
     }
     
     /**
@@ -245,12 +494,12 @@ public class Client extends JFrame {
                     final String msg = message;
                     
                     // Use SwingUtilities to update UI
-                    SwingUtilities.invokeLater(() -> appendToChat(msg));
+                    SwingUtilities.invokeLater(() -> appendChatMessage(msg));
                 }
                 
             } catch (IOException e) {
                 SwingUtilities.invokeLater(() -> {
-                    appendToChat("\n❌ Disconnected from server!");
+                    appendSystemMessage("❌ Disconnected from server!");
                 });
             }
         }

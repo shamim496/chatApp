@@ -77,6 +77,9 @@ A chat window will open and ask for your name.
 ✅ Always start the server first
 ✅ You can run multiple clients on the same computer
 ✅ Press "Send" button or Enter to send messages
+✅ Click 🖼️ (green button) to send images/photos
+✅ Supports JPG, PNG, GIF, BMP image formats
+✅ Large images are automatically resized
 ✅ Close the window to exit
 ✅ You can use emojis in messages 😊💬✨
 

@@ -1,0 +1,117 @@
+╔══════════════════════════════════════════════════════════════╗
+║        💬 Java Chat App - Quick Start Guide                  ║
+╚══════════════════════════════════════════════════════════════╝
+
+🚀 FASTEST WAY TO START:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+1. Compile:
+   javac Server.java Client.java
+
+2. Start Server (Terminal 1):
+   java Server
+
+3. Start Clients (Terminal 2, 3, 4...):
+   java Client
+
+
+🎨 NEW FEATURES:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+✨ Styled Messages with Colors:
+   💙 Your messages: Blue
+   💜 Others' messages: Purple
+   📢 Server: Red
+   ✅ System: Green
+
+📷 Image Sharing:
+   Click 🖼️ button to send photos
+   Supports: JPG, PNG, GIF, BMP
+   Auto-resize large images
+
+
+💬 CHAT INTERFACE:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+┌─────────────────────────────────────────────────────────┐
+│                    💬 Chat Room                         │
+├─────────────────────────────────────────────────────────┤
+│                                                         │
+│  ✅ Connected to server!                               │
+│                                                         │
+│  📢 Bob has joined the chat! 👋                        │
+│                                                         │
+│  💙 Alice • 12:30 PM                                   │
+│    Hello everyone!                                      │
+│                                                         │
+│  💜 Bob • 12:31 PM                                     │
+│    Hi Alice!                                            │
+│                                                         │
+│  💙 Alice • 12:32 PM                                   │
+│    [Image displayed here]                               │
+│                                                         │
+├─────────────────────────────────────────────────────────┤
+│ [Type message...            ] [🖼️] [📤 Send]          │
+└─────────────────────────────────────────────────────────┘
+
+
+⌨️ KEYBOARD SHORTCUTS:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Enter       → Send text message
+Click 🖼️   → Open image selector
+Click Send  → Send text message
+Close       → Disconnect and exit
+
+
+🎯 USAGE EXAMPLES:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📝 Text Message:
+   1. Type in text field
+   2. Press Enter or click Send
+
+📷 Send Image:
+   1. Click 🖼️ (green button)
+   2. Select JPG/PNG/GIF/BMP file
+   3. Image appears for all users
+
+💬 Use Emojis:
+   Just type emojis in your message!
+   Example: "Hello! 😊🎉"
+
+
+⚡ BUTTON GUIDE:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🖼️  = Send Image (Green button)
+     Click to select and send photos
+
+📤  = Send Message (Blue button)
+     Send your typed text message
+
+
+🔥 COOL FEATURES:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+✅ Color-coded usernames
+✅ Timestamp on every message
+✅ Hover effects on buttons
+✅ Auto-scroll to latest message
+✅ System notifications
+✅ Join/leave announcements
+✅ Inline image display
+✅ Auto-resize large images
+✅ Multiple image format support
+
+
+📖 MORE INFO:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+HOW-TO-RUN.txt         → Detailed setup instructions
+MESSAGE-STYLING.md     → About colored messages
+IMAGE-SHARING-GUIDE.md → Complete image feature guide
+README.md              → Full documentation
+
+
+🎉 That's it! Start chatting with style! 💬✨

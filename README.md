@@ -7,9 +7,20 @@
 - ✅ **Real-time messaging** - Socket programming দিয়ে instant message delivery
 - 👥 **Multiple users** - একসাথে অনেক user chat করতে পারবে
 - 🎨 **Beautiful UI** - Modern Swing interface with custom styling
+- 💬 **Styled Messages** - Color-coded messages for different users
+  - 💙 Blue for your own messages
+  - 💜 Purple for other users' messages
+  - 📢 Red for server announcements
+  - 🟢 Green for system notifications
+- 📷 **Image Sharing** - Send photos/images directly in chat
+  - Support for JPG, PNG, GIF, BMP formats
+  - Auto-resize large images
+  - Inline image display
+  - 🖼️ Green image button for easy access
 - ⏰ **Timestamp** - প্রতিটি message এ সময় দেখাবে
 - 🔔 **Join/Leave notifications** - User join/leave করলে notification আসবে
 - 💻 **Server-Client Architecture** - Centralized message relay system
+- 🎯 **Rich Text Display** - Enhanced message formatting with emojis
 
 ## 📁 Project Structure
 
@@ -83,8 +94,9 @@ java Client
 
 1. **Login**: Client open হলে একটি dialog box আসবে যেখানে আপনার নাম লিখবেন
 2. **Message পাঠানো**: নিচের text field এ message লিখে "Send" button এ click করুন অথবা Enter press করুন
-3. **Message দেখা**: চ্যাট area তে সব user এর message timestamp সহ দেখা যাবে
-4. **Exit**: Window close করলে automatically server থেকে disconnect হয়ে যাবে
+3. **Image পাঠানো**: 🖼️ (green image button) এ click করে image file select করুন - automatically সবার কাছে পৌঁছে যাবে
+4. **Message দেখা**: চ্যাট area তে সব user এর message timestamp সহ দেখা যাবে
+5. **Exit**: Window close করলে automatically server থেকে disconnect হয়ে যাবে
 
 ## 💡 Code Structure বুঝা
 
@@ -101,12 +113,19 @@ java Client
 
 ## 🎨 UI Features
 
-- **Modern Design**: Steel Blue color scheme with white background
+- **Modern Design**: Steel Blue color scheme with light gray background
+- **Styled Messages**: Rich text with different colors for different message types
+- **Color-Coded Users**: 
+  - Your messages: Blue (💙)
+  - Other users: Purple (💜)
+  - Server: Red (📢)
+  - System: Green (✅)
 - **Smooth Scrolling**: Automatic scroll to latest message
 - **Hover Effects**: Button hover করলে color change হয়
 - **Responsive Layout**: BorderLayout ব্যবহার করে flexible UI
-- **Custom Fonts**: Segoe UI font family ব্যবহার করা হয়েছে
-- **Emojis**: Message এ emoji support আছে
+- **Custom Fonts**: Segoe UI font family with different sizes for different elements
+- **Emojis**: Full emoji support in messages
+- **Visual Separation**: Messages spaced for better readability
 
 ## 🔧 Technical Details
 
