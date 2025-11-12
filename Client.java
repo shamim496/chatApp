@@ -15,7 +15,7 @@ import java.awt.image.BufferedImage;
  */
 public class Client extends JFrame {
     // Server connection details
-    private static final String SERVER_HOST = "localhost";
+    private String serverHost;
     private static final int SERVER_PORT = 5000;
     
     // Network components
@@ -42,6 +42,20 @@ public class Client extends JFrame {
      * Constructor - Setup UI
      */
     public Client() {
+        // Show dialog to get server IP address
+        serverHost = JOptionPane.showInputDialog(
+            null,
+            "Enter Server IP Address:\n(Use 'localhost' for same computer)",
+            "Connect to Server",
+            JOptionPane.QUESTION_MESSAGE
+        );
+        
+        // If user cancels or empty, use localhost
+        if (serverHost == null || serverHost.trim().isEmpty()) {
+            serverHost = "localhost";
+        }
+        serverHost = serverHost.trim();
+        
         // Show dialog to get username
         username = JOptionPane.showInputDialog(
             this,
@@ -238,7 +252,8 @@ public class Client extends JFrame {
     private void connectToServer() {
         try {
             // Create socket connection
-            socket = new Socket(SERVER_HOST, SERVER_PORT);
+            appendSystemMessage("⏳ Connecting to " + serverHost + ":" + SERVER_PORT + "...");
+            socket = new Socket(serverHost, SERVER_PORT);
             
             // Setup input/output streams
             out = new PrintWriter(socket.getOutputStream(), true);

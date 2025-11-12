@@ -17,9 +17,44 @@ public class Server {
     public static void main(String[] args) {
         System.out.println("🚀 Chat Server starting...");
         System.out.println("📡 Port: " + PORT);
+        
+        // Display all network IP addresses
+        System.out.println("\n🌐 Server IP Addresses:");
+        System.out.println("==================================");
+        try {
+            // Get localhost address
+            InetAddress localhost = InetAddress.getLocalHost();
+            System.out.println("💻 Local: " + localhost.getHostAddress());
+            
+            // Get all network interfaces
+            Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
+            while (interfaces.hasMoreElements()) {
+                NetworkInterface iface = interfaces.nextElement();
+                
+                // Skip loopback and inactive interfaces
+                if (iface.isLoopback() || !iface.isUp()) {
+                    continue;
+                }
+                
+                Enumeration<InetAddress> addresses = iface.getInetAddresses();
+                while (addresses.hasMoreElements()) {
+                    InetAddress addr = addresses.nextElement();
+                    
+                    // Only show IPv4 addresses
+                    if (addr instanceof java.net.Inet4Address) {
+                        System.out.println("🌐 Network (" + iface.getDisplayName() + "): " + addr.getHostAddress());
+                    }
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("⚠️ Could not determine IP addresses");
+        }
+        
+        System.out.println("==================================");
+        System.out.println("ℹ️ Use these IP addresses for remote connections");
         System.out.println("⏳ Waiting for clients...\n");
         
-        try (ServerSocket serverSocket = new ServerSocket(PORT)) {
+        try (ServerSocket serverSocket = new ServerSocket(PORT, 50, InetAddress.getByName("0.0.0.0"))) {
             
             // Continuously accept client connections
             while (true) {

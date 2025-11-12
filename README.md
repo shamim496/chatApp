@@ -6,6 +6,11 @@
 
 - ✅ **Real-time messaging** - Socket programming দিয়ে instant message delivery
 - 👥 **Multiple users** - একসাথে অনেক user chat করতে পারবে
+- 🌐 **Network Support** - Connect from any computer
+  - Same computer (localhost)
+  - Same WiFi/LAN network
+  - Different networks via Internet
+  - Automatic server IP detection
 - 🎨 **Beautiful UI** - Modern Swing interface with custom styling
 - 💬 **Styled Messages** - Color-coded messages for different users
   - 💙 Blue for your own messages
@@ -92,11 +97,15 @@ java Client
 
 ## 🎮 কীভাবে ব্যবহার করবেন
 
-1. **Login**: Client open হলে একটি dialog box আসবে যেখানে আপনার নাম লিখবেন
-2. **Message পাঠানো**: নিচের text field এ message লিখে "Send" button এ click করুন অথবা Enter press করুন
-3. **Image পাঠানো**: 🖼️ (green image button) এ click করে image file select করুন - automatically সবার কাছে পৌঁছে যাবে
-4. **Message দেখা**: চ্যাট area তে সব user এর message timestamp সহ দেখা যাবে
-5. **Exit**: Window close করলে automatically server থেকে disconnect হয়ে যাবে
+1. **Server Connection**: Client open হলে প্রথমে Server IP লিখতে হবে
+   - একই computer এ: `localhost` লিখুন
+   - অন্য computer এ (same network): Server এর IP (যেমন `192.168.1.100`)
+   - Internet থেকে: Server এর Public IP
+2. **Login**: এরপর আপনার নাম লিখুন
+3. **Message পাঠানো**: নিচের text field এ message লিখে "Send" button এ click করুন অথবা Enter press করুন
+4. **Image পাঠানো**: 📁 Upload button এ click করে image file select করুন - automatically সবার কাছে পৌঁছে যাবে
+5. **Message দেখা**: চ্যাট area তে সব user এর message timestamp সহ দেখা যাবে
+6. **Exit**: Window close করলে automatically server থেকে disconnect হয়ে যাবে
 
 ## 💡 Code Structure বুঝা
 
@@ -149,14 +158,25 @@ java Client
 ### "Server এর সাথে সংযোগ করতে সমস্যা হয়েছে"
 - নিশ্চিত করুন Server চালু আছে
 - Check করুন port 5000 ব্যবহার করছে কিনা অন্য কোন application
+- সঠিক IP address দিয়েছেন কিনা verify করুন
+- Firewall settings check করুন
+
+### Network থেকে connect হচ্ছে না
+- একই WiFi/LAN নেটওয়ার্কে আছেন কিনা verify করুন
+- Server এর IP address সঠিক আছে কিনা check করুন (Server start করলে দেখাবে)
+- Windows Firewall এ Java allow করতে হবে
+- Router এ port forwarding করুন (Internet এর জন্য)
+- বিস্তারিত দেখুন: `NETWORK-SETUP.md` বা `NETWORK-SETUP-BANGLA.txt`
 
 ### Multiple clients connect হচ্ছে না
 - Server properly চালু আছে কিনা check করুন
 - Firewall বা antivirus block করছে কিনা দেখুন
+- প্রতিটি client এ সঠিক Server IP দিয়েছেন কিনা verify করুন
 
 ### Messages দেখা যাচ্ছে না
 - Server terminal এ error message আছে কিনা দেখুন
 - Client properly connect হয়েছে কিনা verify করুন
+- Network connection stable আছে কিনা check করুন
 
 ## 🎯 Future Enhancements
 
