@@ -1,0 +1,98 @@
+╔══════════════════════════════════════════════════════════════╗
+║            💬 Java Chat Application - Instructions           ║
+╚══════════════════════════════════════════════════════════════╝
+
+📌 Running for the First Time:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Step 1: Verify Java Installation
+-----------------------------
+Open Command Prompt and type:
+    java -version
+
+If you see the Java version, Java is installed! ✅
+If you see an error, you need to install Java.
+
+Java Download Link: https://www.oracle.com/java/technologies/downloads/
+
+
+Step 2: Compile the Files
+-----------------------------
+Double-click on "1-compile.bat"
+This will compile Server.java and Client.java.
+
+✅ If successful, .class files will be created.
+
+
+Step 3: Start the Server
+-----------------------------
+Double-click on "2-start-server.bat"
+A new window will open showing:
+    🚀 Chat Server starting...
+    📡 Port: 5000
+    ⏳ Waiting for clients...
+
+⚠️ Do NOT close this window! The server needs to keep running.
+
+
+Step 4: Start Client(s) - As Many as You Want
+-----------------------------
+For each user, double-click "3-start-client.bat"
+A chat window will open and ask for your name.
+
+📝 To test with multiple users:
+   - 1st user: Click 3-start-client.bat → Enter name "Alice"
+   - 2nd user: Click 3-start-client.bat again → Enter name "Bob"
+   - 3rd user: Click 3-start-client.bat again → Enter name "Charlie"
+
+
+═══════════════════════════════════════════════════════════════
+
+🐛 Troubleshooting
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+❌ Problem: "java is not recognized..."
+   ✅ Solution: Java is not in your PATH.
+      - Install Java, or
+      - Set JAVA_HOME in Environment Variables
+
+❌ Problem: Compile error - "cannot find symbol"
+   ✅ Solution: Install Java SDK (JDK), not just JRE
+
+❌ Problem: Client shows "Failed to connect to server"
+   ✅ Solution: 
+      - Make sure the server is running (step 3)
+      - Check your firewall
+      - Try temporarily disabling antivirus
+
+❌ Problem: Port already in use
+   ✅ Solution: Close the previous server or
+      Change the PORT number in Server.java
+
+═══════════════════════════════════════════════════════════════
+
+💡 Tips:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+✅ Always start the server first
+✅ You can run multiple clients on the same computer
+✅ Press "Send" button or Enter to send messages
+✅ Close the window to exit
+✅ You can use emojis in messages 😊💬✨
+
+═══════════════════════════════════════════════════════════════
+
+📞 Important Information:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Server Port: 5000
+Server Host: localhost (for same computer)
+
+To connect from other computers on network:
+In Client.java at line 14, change:
+    private static final String SERVER_HOST = "localhost";
+Replace with the server's IP address.
+
+═══════════════════════════════════════════════════════════════
+
+Good luck! Enjoy Chatting! 💬✨
